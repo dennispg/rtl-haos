@@ -57,7 +57,7 @@ The goal is a “drop-in” bridge: plug in RTL-SDR(s), run this script, and wat
     ```bash
     # 1. update and install system dependencies
     sudo apt update
-    sudo apt install rtl-433 git python3 pip3 python3-venv
+    sudo apt install -y rtl-433 git python3 python3-pip python3-venv
     
     # 2. Create a virtual environment named 'venv' in your current directory
     python3 -m venv venv
