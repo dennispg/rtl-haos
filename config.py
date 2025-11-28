@@ -34,6 +34,7 @@ DEVICE_WHITELIST = []  # e.g. ["Acurite-5n1*", "Acurite-6045M*"]
 
 # --- MAIN SENSORS (vs Diagnostics) ---
 MAIN_SENSORS = [
+    "radio_status",  # <--- ADD THIS LINE
     "sys_device_count",
     "temperature", "temperature_C", "temperature_F", "dew_point",
     "humidity", "pressure_hpa", "pressure_inhg", "pressure_PSI",
