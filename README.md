@@ -66,7 +66,8 @@ graph TD
 
 | Device View | System Monitor |
 |:---:|:---:|
-| *[Insert screenshot of a Weather Sensor in HA]* | *[Insert screenshot of the System/Radio Status device]* |
+| <img width="514" height="653" alt="image" src="https://github.com/user-attachments/assets/04939cba-dfa0-44fb-bb33-2c50db6a13ad" /> | <img width="329" height="858" alt="image" src="https://github.com/user-attachments/assets/723a5454-4876-4f86-af86-a10b3bba516e" />
+ |
 
 ---
 ## 📂 Project Layout
