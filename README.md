@@ -73,11 +73,12 @@ graph TD
 ## 📂 Project Layout
 
 * `rtl_mqtt_bridge.py`: Main entry point. Manages threads for `rtl_433`, buffering, and system stats.
-* `config.py`: **User-Editable Settings** (Radios, Filters, MQTT).
+* `config.example.py`: Template for your settings. Copy this to `config.py`.
 * `mqtt_handler.py`: Handles MQTT connection and Home Assistant Auto-Discovery.
+* `system_monitor.py`: Main loop for collecting hardware metrics.
+* `sensors_system.py`: Low-level interface for reading OS/Hardware stats (CPU/RAM/Disk).
+* `utils.py`: Helper functions for MAC address cleaning and math conversions.
 * `field_meta.py`: Definitions for icons, units, and device classes.
-* `system_monitor.py`: Collects hardware metrics (CPU/RAM/Disk).
-
 ---
 
 ## 🛠️ Hardware Requirements
@@ -211,7 +212,9 @@ To keep the bridge running 24/7, use `systemd`.
     sudo nano /etc/systemd/system/rtl-bridge.service
     ```
 
-2.  **Paste the configuration** (Update paths to match your username!):
+2.  **Paste the configuration**
+    > **⚠️ Note:** Verify the paths below! If your username is not `pi` (e.g. running on Proxmox/Ubuntu), change `/home/pi` to your actual home directory (e.g. `/home/jaron`).
+
     ```ini
     [Unit]
     Description=RTL-HAOS MQTT Bridge
@@ -220,9 +223,9 @@ To keep the bridge running 24/7, use `systemd`.
     [Service]
     Type=simple
     User=pi
-    # UPDATE THIS PATH
+    # UPDATE THIS PATH to match your install location
     WorkingDirectory=/home/pi/rtl-haos
-    # UPDATE THIS PATH
+    # UPDATE THIS PATH to point to your python venv executable
     ExecStart=/home/pi/rtl-haos/venv/bin/python /home/pi/rtl-haos/rtl_mqtt_bridge.py
     Restart=always
     RestartSec=10

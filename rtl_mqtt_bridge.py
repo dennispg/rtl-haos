@@ -17,14 +17,15 @@ import statistics
 
 # --- PRE-FLIGHT DEPENDENCY CHECK ---
 def check_dependencies():
-    missing_apt = []
+    # 1. Check for the rtl_433 binary (System Dependency)
     if not subprocess.run(["which", "rtl_433"], capture_output=True).stdout:
-        missing_apt.append("rtl-433")
-    if importlib.util.find_spec("paho") is None:
-        missing_apt.append("python3-paho-mqtt")
+        print("CRITICAL: 'rtl_433' binary not found. Please install it (e.g., sudo apt install rtl-433).")
+        sys.exit(1)
 
-    if missing_apt:
-        print("CRITICAL: MISSING DEPENDENCIES. Install: " + " ".join(missing_apt))
+    # 2. Check for Paho MQTT (Python Dependency)
+    if importlib.util.find_spec("paho") is None:
+        print("CRITICAL: Python dependency 'paho-mqtt' not found.")
+        print("Please install requirements: pip install -r requirements.txt")
         sys.exit(1)
 
 check_dependencies()

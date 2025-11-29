@@ -12,7 +12,7 @@ FIELD_META = {
 
     # --- System Diagnostics (Existing) ---
     "sys_device_count":     ("dev", "none", "mdi:counter", "Active Devices"),
-    "sys_device_list":      ("", "none", "mdi:format-list-bulleted", "Device List"),
+    # "sys_device_list":      ("", "none", "mdi:format-list-bulleted", "Device List"),
 
     "sys_ip":               ("", "none", "mdi:ip-network", "IP Address"),
     "sys_os_version":       ("", "none", "mdi:linux", "Linux Kernel"),
