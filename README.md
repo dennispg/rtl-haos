@@ -194,6 +194,8 @@ python3 rtl_mqtt_bridge.py
  -> TX Acurite-5n1 (1234) [temperature]: 72.3
 ```
 
+   **Note:** It may take a few minutes for the system to receive its first radio transmission.
+
 ---
 
 ## 🔧 Advanced: Multi-Radio Setup (Critical)
