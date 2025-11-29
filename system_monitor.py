@@ -71,13 +71,13 @@ def system_stats_loop(mqtt_handler, DEVICE_ID, MODEL_NAME):
 
             # B. Configuration Lists (Sent as Diagnostics)
             # We fetch these fresh from config every loop in case of future hot-reloads
-            bl = getattr(config, "DEVICE_BLACKLIST", [])
-            wl = getattr(config, "DEVICE_WHITELIST", [])
-            ms = getattr(config, "MAIN_SENSORS", [])
+            # bl = getattr(config, "DEVICE_BLACKLIST", [])
+            # wl = getattr(config, "DEVICE_WHITELIST", [])
+            # ms = getattr(config, "MAIN_SENSORS", [])
 
-            mqtt_handler.send_sensor(DEVICE_ID, "sys_cfg_blacklist", format_list_for_ha(bl), device_name, MODEL_NAME, is_rtl=True)
-            mqtt_handler.send_sensor(DEVICE_ID, "sys_cfg_whitelist", format_list_for_ha(wl), device_name, MODEL_NAME, is_rtl=True)
-            mqtt_handler.send_sensor(DEVICE_ID, "sys_cfg_sensors", format_list_for_ha(ms), device_name, MODEL_NAME, is_rtl=True)
+            # mqtt_handler.send_sensor(DEVICE_ID, "sys_cfg_blacklist", format_list_for_ha(bl), device_name, MODEL_NAME, is_rtl=True)
+            # mqtt_handler.send_sensor(DEVICE_ID, "sys_cfg_whitelist", format_list_for_ha(wl), device_name, MODEL_NAME, is_rtl=True)
+            # mqtt_handler.send_sensor(DEVICE_ID, "sys_cfg_sensors", format_list_for_ha(ms), device_name, MODEL_NAME, is_rtl=True)
             
         except Exception as e:
             print(f"[ERROR] Bridge Stats update failed: {e}")
