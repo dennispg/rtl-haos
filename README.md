@@ -10,10 +10,6 @@ Unlike standard `rtl_433` scripts, this project captures **detailed signal metri
 
 It also functions as a **System Monitor**, reporting the host machine's health (CPU, RAM, Disk, Temp) and the live status of the radio dongle itself, giving you a complete view of your hardware's performance in one place.
 
-For a list of supported wireless devices:
-https://github.com/merbanan/rtl_433
-
-
 ---
 
 ## ✨ Features
@@ -22,8 +18,8 @@ https://github.com/merbanan/rtl_433
 * **Signal Diagnostics:** Reports **RSSI, SNR, and Noise Floor** for every device, making it easy to identify weak signals, plot coverage ranges, or hunt down interference sources.
 * **Smart System Monitor:**
     * Reports Host CPU, RAM, Disk, and Temperature.
-    * **Live Radio Status:** Reports if the SDR is "Online," "Scanning," or "Disconnected" (grouped with the host device).
-* **Native Graphing:** All sensors utilize Home Assistant's `measurement` state class, enabling automatic, long-term historical graphing of temperature, humidity, and system resources.
+    * **Live Radio Status:** Shows `"Scanning..."`, `"Online"`, or error states like `"No Device Found"` / `"Error: USB Busy"` for each radio, grouped with the host device.
+* **Native Graphing:** Environmental sensors use the correct `measurement` state class, and meter-like fields use `total_increasing`, so graphs and statistics in Home Assistant just work for temperatures, humidity, pressure, light, and utility counters.
 * **Noise Reduction:**
     * **Data Averaging:** Buffers readings (e.g., every 30s) to prevent database bloat from sensors that spam updates every second.
     * **Filtering:** Built-in Whitelist and Blacklist support to ignore your neighbor's tire pressure sensors.
@@ -39,7 +35,7 @@ https://github.com/merbanan/rtl_433
 graph TD
     subgraph "RF Devices (Airwaves)"
         A[Weather Station] -->|433.92 MHz| D[Antenna]
-        B[Motion Sensor] -->|315 MHz| D
+        B[Tire Sensor] -->|315 MHz| D
         C[Utility Meter] -->|915 MHz| D
     end
 
@@ -73,16 +69,13 @@ graph TD
 | *[Insert screenshot of a Weather Sensor in HA]* | *[Insert screenshot of the System/Radio Status device]* |
 
 ---
-
 ## 📂 Project Layout
 
-* `rtl_mqtt_bridge.py`: Main entry point. Manages threads for `rtl_433`, buffering, and system stats.
-* `config.example.py`: Template for your settings. Copy this to `config.py`.
-* `mqtt_handler.py`: Handles MQTT connection and Home Assistant Auto-Discovery.
-* `system_monitor.py`: Main loop for collecting hardware metrics.
-* `sensors_system.py`: Low-level interface for reading OS/Hardware stats (CPU/RAM/Disk).
-* `utils.py`: Helper functions for MAC address cleaning and math conversions.
-* `field_meta.py`: Definitions for icons, units, and device classes.
+* `rtl_mqtt_bridge.py` – Main script. Starts rtl_433 processes, system monitor, and MQTT publishing.
+* `config.example.py` – Template for your settings. Copy this to `config.py`.
+* `config.py` – Your settings (radios, filters, MQTT, throttle).
+
+
 ---
 
 ## 🛠️ Hardware Requirements
@@ -128,21 +121,27 @@ cp config.example.py config.py
 nano config.py
 ```
 
+If you only have **one** RTL-SDR, you can leave `RTL_CONFIG = []` in `config.py`.  
+The bridge will automatically try to read the dongle's serial with `rtl_eeprom` and use that.  
+If it cannot detect a serial, it falls back to device index `id = "0"`.
+
 **Key Configuration Examples:**
 
 ```python
 # --- MQTT ---
 MQTT_SETTINGS = {
-    "host": "192.168.1.100",
+    "host": "192.168.1.100",   # Your MQTT broker / Home Assistant IP
+    "port": 1883,
     "user": "mqtt_user",
-    "pass": "password"
+    "pass": "password",
+    "keepalive": 60,
 }
 
 # --- MULTI-RADIO SETUP ---
-# You can define multiple radios here.
+# You can define multiple radios here; `id` should match the dongle serial (see Advanced: Multi-Radio Setup).
 RTL_CONFIG = [
-    {"name": "Weather Radio", "id": "0", "freq": "433.92M", "rate": "250k"},
-    {"name": "Utility Meter", "id": "1", "freq": "915M",    "rate": "250k"},
+    {"name": "Weather Radio", "id": "101", "freq": "433.92M", "rate": "250k"},
+    {"name": "Utility Meter", "id": "102", "freq": "915M",    "rate": "250k"},
 ]
 
 # --- FILTERING ---
@@ -216,9 +215,7 @@ To keep the bridge running 24/7, use `systemd`.
     sudo nano /etc/systemd/system/rtl-bridge.service
     ```
 
-2.  **Paste the configuration**
-    > **⚠️ Note:** Verify the paths below! If your username is not `pi` (e.g. running on Proxmox/Ubuntu), change `/home/pi` to your actual home directory (e.g. `/home/jaron`).
-
+2.  **Paste the configuration** (Update paths to match your username!):
     ```ini
     [Unit]
     Description=RTL-HAOS MQTT Bridge
@@ -227,10 +224,10 @@ To keep the bridge running 24/7, use `systemd`.
     [Service]
     Type=simple
     User=pi
-    # UPDATE THIS PATH to match your install location
+    # UPDATE THIS PATH
     WorkingDirectory=/home/pi/rtl-haos
-    # UPDATE THIS PATH to point to your python venv executable
-    ExecStart=/home/pi/rtl-haos/venv/bin/python /home/pi/rtl-haos/rtl_mqtt_bridge.py
+    # UPDATE THIS PATH (use python or python3 depending on your venv)
+    ExecStart=/home/pi/rtl-haos/venv/bin/python3 /home/pi/rtl-haos/rtl_mqtt_bridge.py
     Restart=always
     RestartSec=10
 
