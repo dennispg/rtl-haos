@@ -104,7 +104,7 @@ sudo apt install -y rtl-sdr rtl-433 git python3 python3-pip python3-venv
 
 ### 2. Clone & Setup
 ```bash
-git clone [https://github.com/jaronmcd/rtl-haos.git](https://github.com/jaronmcd/rtl-haos.git)
+git clone https://github.com/jaronmcd/rtl-haos.git
 cd rtl-haos
 
 # Create and activate virtual environment
